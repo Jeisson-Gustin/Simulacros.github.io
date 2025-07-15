@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulacro Matemáticas S2 - Evaluación ICFES</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .sidebar-left {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 300px;
+            margin-right: 250px;
+            padding: 40px 20px;
+        }
+
+        .sidebar-right {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            right: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .student-info h2 {
+            color: #2196f3;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .student-name-display {
+            background: linear-gradient(45deg, #2196f3, #21cbf3);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 20px;
+            height: 25px;
+            position: relative;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .page-indicator, .score-display {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .score-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2196f3;
+            margin: 10px 0;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .exercise-card h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .equation {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .radio-group {
+            margin: 25px 0;
+        }
+
+        .radio-group label {
+            display: block;
+            margin: 12px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .radio-group label:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            transform: translateX(5px);
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .table-container {
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background: linear-gradient(45deg, #2196f3, #21cbf3);
+            color: white;
+            font-weight: bold;
+        }
+
+        .data-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .figure-diagram {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            margin: 20px auto;
+            display: block;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .welcome-container {
+            text-align: center;
+            color: white;
+        }
+
+        .welcome-container h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .student-input {
+            padding: 15px;
+            font-size: 1.2em;
+            border: 3px solid #ddd;
+            border-radius: 25px;
+            width: 300px;
+            text-align: center;
+            margin: 20px;
+            transition: border-color 0.3s ease;
+        }
+
+        .student-input:focus {
+            outline: none;
+            border-color: #2196f3;
+            box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 20px;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #2196f3, #21cbf3);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin: 5px 0;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .nav-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results-container {
+            text-align: center;
+            color: white;
+        }
+
+        .final-score {
+            font-size: 4em;
+            font-weight: bold;
+            color: #4caf50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin: 30px 0;
+        }
+
+        .performance-message {
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .performance-message.excellent {
+            background: linear-gradient(45deg, #4caf50, #81c784);
+        }
+
+        .performance-message.good {
+            background: linear-gradient(45deg, #2196f3, #64b5f6);
+        }
+
+        .performance-message.needs-improvement {
+            background: linear-gradient(45deg, #ff9800, #ffb74d);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .achievement {
+            background: white;
+            color: #2c3e50;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .achievement.gold {
+            border-top: 5px solid #ffd700;
+        }
+
+        .achievement.silver {
+            border-top: 5px solid #c0c0c0;
+        }
+
+        .achievement.bronze {
+            border-top: 5px solid #cd7f32;
+        }
+
+        .buttons-container {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .download-btn,
+        .restart-btn {
+            background: linear-gradient(45deg, #9c27b0, #e91e63);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover,
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
+        }
+
+        .navigation-controls h3 {
+            color: #2196f3;
+            margin-bottom: 15px;
+        }
+
+        .procedure-box {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #2196f3;
+        }
+
+        /* Estilos específicos para modo aleatorio permanente */
+        .random-indicator {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .random-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar-left,
+            .sidebar-right {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+            
+            .main-content {
+                margin: 0;
+                padding: 20px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Sidebar Izquierdo - Información del Estudiante -->
+    <div class="sidebar-left">
+        <div class="student-info">
+            <h2>👤 Estudiante</h2>
+            <div class="student-name-display" id="sidebarStudentName">Sin nombre</div>
+            
+            <div class="random-indicator">
+                🎲 MODO ALEATORIO ACTIVO
+            </div>
+            
+            <div class="progress-container">
+                <h3>📊 Progreso General</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-inner" id="progressText">0%</div>
+                </div>
+            </div>
+            
+            <div class="page-indicator">
+                <h3>Pregunta Actual</h3>
+                <p id="currentPageName">Inicio</p>
+                <p><span id="currentPageNum">0</span> de <span id="totalPages">11</span></p>
+            </div>
+            
+            <div class="score-display">
+                <h4>Puntuación</h4>
+                <div class="score-number" id="currentScore">0</div>
+                <p>de 100 puntos</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="main-content">
+        <!-- Página 0: Bienvenida -->
+        <div class="page active" id="page0">
+            <div class="welcome-container">
+                <h2>🎯 ¡Bienvenido al Simulacro Matemáticas S2!</h2>
+                <p style="font-size: 1.2em; margin: 20px 0;">Segunda evaluación diseñada para fortalecer tus competencias matemáticas preparatorias para el ICFES.</p>
+                
+                <div class="random-info">
+                    <h3>🎲 Simulacro en Modo Aleatorio</h3>
+                    <p style="font-size: 1em; color: rgba(255,255,255,0.9); margin-top: 15px;">
+                        Las opciones de respuesta se han mezclado aleatoriamente para crear una experiencia única de práctica. 
+                        Cada vez que reinicies el simulacro, obtendrás un orden diferente de las opciones.
+                    </p>
+                </div>
+                
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 25px; border-radius: 15px; margin: 30px 0;">
+                    <h3>📋 Instrucciones:</h3>
+                    <ul style="text-align: left; max-width: 400px; margin: 20px auto; color: white;">
+                        <li>Completa 10 preguntas de selección múltiple</li>
+                        <li>Cada pregunta evalúa competencias específicas</li>
+                        <li>Analiza cuidadosamente cada enunciado</li>
+                        <li>Las opciones están mezcladas aleatoriamente</li>
+                        <li>Visualiza tu desempeño personalizado al final</li>
+                    </ul>
+                </div>
+                <h3>👤 Ingresa tu nombre completo:</h3>
+                <input class="student-input" id="studentName" maxlength="50" placeholder="Escribe tu nombre aquí" type="text"/>
+                <br/>
+                <button class="start-btn" onclick="startEvaluation()">🚀 Comenzar Simulacro</button>
+            </div>
+        </div>
+
+        <!-- Páginas de preguntas 1-10 (se generan dinámicamente) -->
+        <div class="page" id="page1">
+            <div class="exercise-card">
+                <h2><span class="icon">🏃‍♂️</span>Pregunta 1: Competencia Deportiva</h2>
+                <p>Cuatro atletas participaron en una prueba de salto y obtuvieron los siguientes resultados:</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <tr>
+                            <th>Atleta</th>
+                            <th>Resultado</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Julia</strong></td>
+                            <td>14,56 m</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Urna</strong></td>
+                            <td>14,2 m</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Leo</strong></td>
+                            <td>14,58 m</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ruby</strong></td>
+                            <td>14,6 m</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p>Si se entregaron medallas de oro, plata y bronce al primer, segundo y tercer lugar, respectivamente, ¿cuál atleta recibió la medalla de plata en salto?</p>
+                
+                <div class="radio-group" id="optionsQ1">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(1)" id="submitQ1">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ1"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page2">
+            <div class="exercise-card">
+                <h2><span class="icon">📖</span>Pregunta 2: Análisis de Resultados Académicos</h2>
+                <p>Pedro y Ana asistieron a un curso de inglés. Al final de este, se les aplicó un examen de lectura y escritura para evaluar las competencias realizadas. La tabla muestra el número de respuestas correctas obtenidas en cada uno de ellos.</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Lectura</th>
+                            <th>Escritura</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Pedro</strong></td>
+                            <td>5</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ana</strong></td>
+                            <td>1</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td><strong>N° de preguntas del examen</strong></td>
+                            <td>5</td>
+                            <td>10</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <h3>De acuerdo con la tabla, ¿qué porcentaje del examen de escritura respondieron correctamente?</h3>
+                
+                <div class="radio-group" id="optionsQ2">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(2)" id="submitQ2">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ2"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page3">
+            <div class="exercise-card">
+                <h2><span class="icon">🧪</span>Pregunta 3: Análisis de Densidades</h2>
+                <p>La densidad es la relación entre la masa y el volumen (densidad = masa/volumen). En un laboratorio hay dos sustancias (X y Z) que tienen el mismo volumen de 100 ml y diferente masa. La siguiente tabla muestra algunas características de las sustancias:</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <tr>
+                            <th>Sustancia</th>
+                            <th>Volumen</th>
+                            <th>Densidad</th>
+                            <th>Características</th>
+                        </tr>
+                        <tr>
+                            <td><strong>X</strong></td>
+                            <td>100 ml</td>
+                            <td>D₁ g/ml</td>
+                            <td>D₁ > 1</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Z</strong></td>
+                            <td>100 ml</td>
+                            <td>D₂ g/ml</td>
+                            <td>0 < D₂ < 1</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p>Para un experimento se debe utilizar la sustancia de la tabla cuya masa sea menor que 100 g. Para esto, se comparan sus masas y, finalmente, se escoge la sustancia Z.</p>
+                
+                <h3>¿Es correcta esta elección?</h3>
+                
+                <div class="radio-group" id="optionsQ3">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(3)" id="submitQ3">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ3"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page4">
+            <div class="exercise-card">
+                <h2><span class="icon">💼</span>Pregunta 4: Procedimiento de Bonificación</h2>
+                <p>La gerente de una empresa hace uso del siguiente procedimiento para pagarles a sus empleados una bonificación salarial:</p>
+                
+                <div class="procedure-box">
+                    <strong>Paso 1.</strong> Promedia el número de horas que trabajó el empleado en los dos primeros días.<br/>
+                    <strong>Paso 2.</strong> Promedia el resultado del paso 1 con el número de horas que trabajó el empleado en el tercer día.<br/>
+                    <strong>Paso 3.</strong> Promedia el resultado del paso 2 con el número de horas que trabajó el empleado en el cuarto día.<br/>
+                    <strong>Paso 4.</strong> El resultado del paso 3 lo multiplica por 10.000.<br/>
+                    <strong>Paso 5.</strong> El resultado del paso 4 es el valor de la bonificación en pesos.
+                </div>
+                
+                <p>Si un empleado registró las horas trabajadas durante cuatro días, como se muestra en la tabla:</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <tr>
+                            <th>Día 1</th>
+                            <th>Día 2</th>
+                            <th>Día 3</th>
+                            <th>Día 4</th>
+                        </tr>
+                        <tr>
+                            <td>8 horas</td>
+                            <td>12 horas</td>
+                            <td>4 horas</td>
+                            <td>11 horas</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <h3>¿Cuánto es la bonificación que recibe?</h3>
+                
+                <div class="radio-group" id="optionsQ4">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(4)" id="submitQ4">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ4"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page5">
+            <div class="exercise-card">
+                <h2><span class="icon">🔬</span>Pregunta 5: Análisis Biológico</h2>
+                <p>En una clase de Biología, la profesora llevó a sus estudiantes al laboratorio para analizar dos organismos microscópicos.</p>
+                
+                <p>El organismo X tiene un diámetro de 2 × 10⁻⁷ cm y el organismo Z tiene un diámetro de 2 × 10⁻⁶ cm. A partir de esta información, un estudiante afirmó que el organismo X es el que tiene menor diámetro.</p>
+                
+                <div class="equation">
+                    💡 Comparación de notación científica:<br/>
+                    Organismo X: 2 × 10⁻⁷ cm<br/>
+                    Organismo Z: 2 × 10⁻⁶ cm
+                </div>
+                
+                <h3>¿Es correcta la afirmación realizada por el estudiante?</h3>
+                
+                <div class="radio-group" id="optionsQ5">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(5)" id="submitQ5">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ5"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page6">
+            <div class="exercise-card">
+                <h2><span class="icon">📏</span>Pregunta 6: Construcción Geométrica</h2>
+                <p>Para construir un ángulo de 45°, un estudiante procede de la siguiente manera:</p>
+                
+                <div class="procedure-box">
+                    <strong>Paso 1.</strong> Construye el triángulo PQR que se muestra en la gráfica.<br/>
+                    <strong>Paso 2.</strong> Traza el segmento PS, que divide el ángulo QPR en dos ángulos iguales.
+                </div>
+                
+                <svg class="figure-diagram" viewBox="0 0 300 200">
+                    <rect width="300" height="200" fill="#f8f9fa"/>
+                    <!-- Triángulo -->
+                    <line x1="100" y1="150" x2="200" y2="150" stroke="#333" stroke-width="2"/>
+                    <line x1="100" y1="150" x2="150" y2="80" stroke="#333" stroke-width="2"/>
+                    <line x1="200" y1="150" x2="150" y2="80" stroke="#333" stroke-width="2"/>
+                    <!-- Bisectriz -->
+                    <line x1="150" y1="80" x2="150" y2="150" stroke="#ff5722" stroke-width="2" stroke-dasharray="5,5"/>
+                    <!-- Puntos -->
+                    <circle cx="100" cy="150" r="3" fill="#333"/>
+                    <circle cx="200" cy="150" r="3" fill="#333"/>
+                    <circle cx="150" cy="80" r="3" fill="#333"/>
+                    <circle cx="150" cy="150" r="3" fill="#ff5722"/>
+                    <!-- Etiquetas -->
+                    <text x="95" y="165" font-size="12">Q</text>
+                    <text x="205" y="165" font-size="12">R</text>
+                    <text x="145" y="75" font-size="12">P</text>
+                    <text x="155" y="165" font-size="12">S</text>
+                    <!-- Medidas -->
+                    <text x="50" y="115" font-size="10">2</text>
+                    <text x="230" y="115" font-size="10">2</text>
+                    <text x="150" y="170" font-size="10">0</text>
+                </svg>
+                
+                <p>De este modo, el ángulo QPS mide 45°. Ahora bien, otro estudiante asegura que no es necesario el paso 2 para construir un ángulo de 45°.</p>
+                
+                <h3>¿Es verdadera esta afirmación?</h3>
+                
+                <div class="radio-group" id="optionsQ6">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(6)" id="submitQ6">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ6"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page7">
+            <div class="exercise-card">
+                <h2><span class="icon">📊</span>Pregunta 7: Análisis Estadístico de Cuartiles</h2>
+                <p>La tabla muestra las estaturas, ordenadas de menor a mayor, de 11 estudiantes de grado once. El cuartil 1 (Q₁) es 162 cm pero se desconoce el valor o igual que a las tres primeras estaturas de la tabla.</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Estatura (cm)</th>
+                            <th>Cuartil</th>
+                        </tr>
+                        <tr><td>1</td><td>155</td><td>Mín.</td></tr>
+                        <tr><td>2</td><td>156</td><td></td></tr>
+                        <tr><td>3</td><td>162</td><td>Q₁</td></tr>
+                        <tr><td>4</td><td>163</td><td></td></tr>
+                        <tr><td>5</td><td>164</td><td></td></tr>
+                        <tr><td>6</td><td>165</td><td>Q₂</td></tr>
+                        <tr><td>7</td><td>167</td><td></td></tr>
+                        <tr><td>8</td><td>168</td><td></td></tr>
+                        <tr><td>9</td><td>170</td><td>Q₃</td></tr>
+                        <tr><td>10</td><td>171</td><td></td></tr>
+                        <tr><td>11</td><td>172</td><td>Máx.</td></tr>
+                    </table>
+                </div>
+                
+                <h3>¿Cuál de las siguientes gráficas de cajas se corresponde con la información de la tabla?</h3>
+                
+                <div class="radio-group" id="optionsQ7">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(7)" id="submitQ7">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ7"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page8">
+            <div class="exercise-card">
+                <h2><span class="icon">💃</span>Pregunta 8: Posicionamiento en Coreografía</h2>
+                <p>Durante el inicio de una coreografía, cuatro participantes deben estar ubicados en los puntos que se muestran en la siguiente tabla:</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <tr>
+                            <th>Participante</th>
+                            <th>Posición</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Pablo</strong></td>
+                            <td>(-2, 3)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Laura</strong></td>
+                            <td>(1, 1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>René</strong></td>
+                            <td>(2, -3)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sara</strong></td>
+                            <td>(-1, -1)</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p>Adicionalmente, al inicio de la coreografía, Pablo y René deben estar conectados mediante un lazo, y Laura y Sara deben estar conectados mediante otro lazo.</p>
+                
+                <h3>¿Cuál de las siguientes representaciones corresponde al inicio de una coreografía?</h3>
+                
+                <div class="radio-group" id="optionsQ8">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(8)" id="submitQ8">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ8"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page9">
+            <div class="exercise-card">
+                <h2><span class="icon">📈</span>Pregunta 9: Análisis de Función Cuadrática</h2>
+                <p>Para determinar los cortes con el eje x de la gráfica de la función f(x) = x² - 169, se pueden emplear varios métodos.</p>
+                
+                <div class="equation">
+                    f(x) = x² - 169
+                </div>
+                
+                <h3>¿Cuál de los siguientes métodos NO permite determinar los cortes con el eje x?</h3>
+                
+                <div class="radio-group" id="optionsQ9">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(9)" id="submitQ9">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ9"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page10">
+            <div class="exercise-card">
+                <h2><span class="icon">🥤</span>Pregunta 10: Análisis de Volúmenes</h2>
+                <p>La figura muestra un recipiente cilíndrico de 10 cm de altura y 5 cm de diámetro en su base, en el que se depositaron 50 ml de agua y un volumen desconocido de aceite.</p>
+                
+                <svg class="figure-diagram" viewBox="0 0 300 250">
+                    <rect width="300" height="250" fill="#f8f9fa"/>
+                    <!-- Cilindro -->
+                    <ellipse cx="150" cy="200" rx="50" ry="15" stroke="#333" stroke-width="2" fill="none"/>
+                    <ellipse cx="150" cy="100" rx="50" ry="15" stroke="#333" stroke-width="2" fill="none"/>
+                    <line x1="100" y1="100" x2="100" y2="200" stroke="#333" stroke-width="2"/>
+                    <line x1="200" y1="100" x2="200" y2="200" stroke="#333" stroke-width="2"/>
+                    <!-- Agua -->
+                    <ellipse cx="150" cy="180" rx="50" ry="15" fill="#4fc3f7"/>
+                    <rect x="100" y="165" width="100" height="15" fill="#4fc3f7"/>
+                    <!-- Aceite -->
+                    <ellipse cx="150" cy="130" rx="50" ry="15" fill="#8bc34a"/>
+                    <rect x="100" y="130" width="100" height="35" fill="#8bc34a"/>
+                    <!-- Etiquetas -->
+                    <text x="210" y="145" font-size="12" fill="#333">Aceite</text>
+                    <text x="210" y="175" font-size="12" fill="#333">Agua</text>
+                    <text x="70" y="155" font-size="10" fill="#333">10 cm</text>
+                    <text x="150" y="220" font-size="10" fill="#333" text-anchor="middle">5 cm diámetro</text>
+                </svg>
+                
+                <p>Para calcular el volumen del aceite depositado se efectúa el siguiente procedimiento:</p>
+                
+                <div class="procedure-box">
+                    <strong>Paso 1.</strong> Se calcula el área del círculo que tiene 5 cm de diámetro.<br/>
+                    <strong>Paso 2.</strong> El anterior resultado se multiplica por 10 cm.<br/>
+                    <strong>Paso 3.</strong> Al resultado del paso 2 se le restan 50 ml.
+                </div>
+                
+                <h3>¿En qué paso hay un error?</h3>
+                
+                <div class="radio-group" id="optionsQ10">
+                    <!-- Las opciones se generarán dinámicamente -->
+                </div>
+                
+                <button class="submit-btn" onclick="checkQuestion(10)" id="submitQ10">✅ Verificar Respuesta</button>
+                <div class="feedback" id="feedbackQ10"></div>
+            </div>
+        </div>
+
+        <!-- Página 11: Resultados -->
+        <div class="page" id="page11">
+            <div class="results-container" id="certificateContent">
+                <h2>🎓 ¡Simulacro S2 Completado!</h2>
+                <div class="student-name-display" id="finalStudentName"></div>
+                
+                <div class="random-indicator" style="margin: 20px auto; max-width: 400px;">
+                    🎲 COMPLETADO EN MODO ALEATORIO
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 15px; border: 2px solid #fff;">
+                    <h3 style="color: white; margin: 0;">📅 Fecha de Evaluación: <span id="evaluationDate"></span></h3>
+                    <h3 style="color: white; margin: 10px 0 0 0;">🏫 Evaluación: Simulacro Matemáticas S2 - ICFES</h3>
+                </div>
+                <div class="final-score" id="finalScore">0/100</div>
+                <div class="performance-message" id="performanceMessage"></div>
+                
+                <h3 style="color: white;">🏆 Reconocimientos y Logros Obtenidos</h3>
+                <div class="achievements-grid" id="achievementsContainer"></div>
+                
+                <h3 style="color: white;">📊 Desglose Detallado por Competencia</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0;">
+                    <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <h4>Razonamiento Cuantitativo</h4>
+                        <div id="reasoningScore" style="font-size: 2em; color: #2196f3; font-weight: bold;">0/40</div>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <h4>Competencia Geométrica</h4>
+                        <div id="geometryScore" style="font-size: 2em; color: #4caf50; font-weight: bold;">0/30</div>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <h4>Estadística y Probabilidad</h4>
+                        <div id="statisticsScore" style="font-size: 2em; color: #ff9800; font-weight: bold;">0/30</div>
+                    </div>
+                </div>
+                
+                <div style="margin: 40px 0; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 15px; border: 2px solid #fff;">
+                    <h4 style="color: white; margin: 0 0 10px 0;">💡 Recomendaciones para el ICFES:</h4>
+                    <div id="recommendations" style="text-align: left; line-height: 1.8; color: white;"></div>
+                </div>
+                
+                <div class="buttons-container">
+                    <button class="download-btn" onclick="downloadCertificate()">📄 Descargar Certificado PDF</button>
+                    <button class="restart-btn" onclick="restartEvaluation()">🔄 Nueva Evaluación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Derecho - Navegación -->
+    <div class="sidebar-right">
+        <div class="navigation-controls">
+            <h3>📱 Navegación</h3>
+            <button class="nav-btn" disabled id="prevBtn" onclick="previousPage()">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextPage()">Siguiente ➡️</button>
+            <button class="nav-btn" id="resultsBtn" onclick="showResults()" style="display: none;">📊 Ver Resultados</button>
+            
+            <div style="margin: 30px 0; padding: 15px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <h4>📋 Preguntas</h4>
+                <div style="font-size: 0.9em; line-height: 1.8;">
+                    <div id="q1status">1. Atletas ⏳</div>
+                    <div id="q2status">2. Examen Inglés ⏳</div>
+                    <div id="q3status">3. Densidad ⏳</div>
+                    <div id="q4status">4. Bonificación ⏳</div>
+                    <div id="q5status">5. Microscopios ⏳</div>
+                    <div id="q6status">6. Ángulo 45° ⏳</div>
+                    <div id="q7status">7. Cuartiles ⏳</div>
+                    <div id="q8status">8. Coreografía ⏳</div>
+                    <div id="q9status">9. Función Cuadrática ⏳</div>
+                    <div id="q10status">10. Recipiente ⏳</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Variables globales
+    let studentName = '';
+    let currentPage = 0;
+    let totalScore = 0;
+    let questionsAnswered = 0;
+    let questionScores = {
+        q1: 0, q2: 0, q3: 0, q4: 0, q5: 0,
+        q6: 0, q7: 0, q8: 0, q9: 0, q10: 0
+    };
+    let shuffledQuestions = {};
+    
+    const pageNames = [
+        'Inicio', 'Atletas', 'Examen Inglés', 'Densidad', 'Bonificación', 'Microscopios',
+        'Ángulo 45°', 'Cuartiles', 'Coreografía', 'Función Cuadrática', 'Recipiente', 'Resultados'
+    ];
+
+    // Base de datos de preguntas con opciones originales
+    const questionsDatabase = {
+        1: {
+            options: [
+                { letter: 'A', text: 'Julia' },
+                { letter: 'B', text: 'Urna' },
+                { letter: 'C', text: 'Leo' },
+                { letter: 'D', text: 'Ruby' }
+            ],
+            correct: 'C'
+        },
+        2: {
+            options: [
+                { letter: 'A', text: 'Pedro, el 50 %, y Ana, el 80 %' },
+                { letter: 'B', text: 'Pedro, el 5 %, y Ana, el 8 %' },
+                { letter: 'C', text: 'Pedro, el 50 %, y Ana, el 10 %' },
+                { letter: 'D', text: 'Pedro, el 5 %, y Ana, el 1 %' }
+            ],
+            correct: 'A'
+        },
+        3: {
+            options: [
+                { letter: 'A', text: 'No, porque la sustancia X tiene la mayor densidad de la tabla' },
+                { letter: 'B', text: 'Sí, porque el cociente masa/volumen de la sustancia Z resulta menor que 1' },
+                { letter: 'C', text: 'No, porque la sustancia Z tiene una densidad menor que 1 pero positiva' },
+                { letter: 'D', text: 'Sí, porque la sustancia X tiene más masa en el mismo volumen' }
+            ],
+            correct: 'B'
+        },
+        4: {
+            options: [
+                { letter: 'A', text: '$70.000' },
+                { letter: 'B', text: '$80.000' },
+                { letter: 'C', text: '$90.000' },
+                { letter: 'D', text: '$100.000' }
+            ],
+            correct: 'A'
+        },
+        5: {
+            options: [
+                { letter: 'A', text: 'No, porque al ser -7 mayor que -6, 10⁻⁷ es mayor que 10⁻⁶' },
+                { letter: 'B', text: 'Sí, porque al ser -7 menor que -6, 10⁻⁷ es menor que 10⁻⁶' },
+                { letter: 'C', text: 'No, porque al ser -7 menor que -6, 10⁻⁷ es mayor que 10⁻⁶' },
+                { letter: 'D', text: 'Sí, porque al ser -7 mayor que -6, 10⁻⁷ es menor que 10⁻⁶' }
+            ],
+            correct: 'B'
+        },
+        6: {
+            options: [
+                { letter: 'A', text: 'Sí, porque los ángulos PQR y PRQ obtenidos en el paso 1 miden 45°' },
+                { letter: 'B', text: 'No, porque el segmento PS divide el ángulo recto en dos ángulos de 45°' },
+                { letter: 'C', text: 'Sí, porque el ángulo QPR construido en el paso 1 mide 45°' },
+                { letter: 'D', text: 'No, porque se desconoce la medida de todos los ángulos del triángulo PQR' }
+            ],
+            correct: 'A'
+        },
+        7: {
+            options: [
+                { letter: 'A', text: 'Gráfica A - Distribución simétrica con Q₁=162, Q₂=165, Q₃=170' },
+                { letter: 'B', text: 'Gráfica B - Distribución asimétrica con mediana desplazada hacia la derecha' },
+                { letter: 'C', text: 'Gráfica C - Distribución simétrica con rango intercuartílico amplio' },
+                { letter: 'D', text: 'Gráfica D - Distribución asimétrica con cola hacia la izquierda' }
+            ],
+            correct: 'A'
+        },
+        8: {
+            options: [
+                { letter: 'A', text: 'Conexión diagonal Pablo-René y conexión vertical Laura-Sara' },
+                { letter: 'B', text: 'Conexión horizontal Pablo-René y conexión diagonal Laura-Sara' },
+                { letter: 'C', text: 'Conexión vertical Pablo-René y conexión horizontal Laura-Sara' },
+                { letter: 'D', text: 'Conexión diagonal Pablo-René y conexión diagonal Laura-Sara' }
+            ],
+            correct: 'D'
+        },
+        9: {
+            options: [
+                { letter: 'A', text: 'Factorizar x² - 169 = (x - 13)(x + 13)' },
+                { letter: 'B', text: 'Utilizar la fórmula cuadrática x = ± √(4 × 169)/2' },
+                { letter: 'C', text: 'Completar cuadrados x² - 169 + 26x - 26x = (x - 13)²' },
+                { letter: 'D', text: 'Encontrar dos números tales que su cuadrado sea 169 o resolver x = ± √169' }
+            ],
+            correct: 'B'
+        },
+        10: {
+            options: [
+                { letter: 'A', text: 'Paso 1, porque el área del círculo se debe calcular con el radio de la base del cilindro' },
+                { letter: 'B', text: 'Paso 1, porque la base del cilindro que forma el aceite es diferente a la del recipiente' },
+                { letter: 'C', text: 'Paso 2, porque con esa altura se estaría calculando el volumen de todo el recipiente' },
+                { letter: 'D', text: 'Paso 2, porque se estaría calculando el volumen que ocupa el agua' }
+            ],
+            correct: 'C'
+        }
+    };
+
+    // Función para mezclar array (algoritmo Fisher-Yates)
+    function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    // Función para preparar preguntas en modo aleatorio (SIEMPRE ACTIVO)
+    function prepareRandomQuestions() {
+        shuffledQuestions = {};
+        
+        for (let questionNum = 1; questionNum <= 10; questionNum++) {
+            const originalQuestion = questionsDatabase[questionNum];
+            const shuffledOptions = shuffleArray(originalQuestion.options);
+            
+            // Encontrar dónde quedó la respuesta correcta después del mezclado
+            const correctOptionIndex = shuffledOptions.findIndex(option => 
+                option.letter === originalQuestion.correct
+            );
+            
+            // Asignar nuevas letras A, B, C, D según el nuevo orden
+            const newCorrectLetter = String.fromCharCode(65 + correctOptionIndex);
+            
+            shuffledQuestions[questionNum] = {
+                options: shuffledOptions.map((option, index) => ({
+                    ...option,
+                    newLetter: String.fromCharCode(65 + index)
+                })),
+                correct: newCorrectLetter
+            };
+        }
+    }
+
+    // Función para renderizar las opciones de una pregunta (siempre en modo aleatorio)
+    function renderQuestionOptions(questionNum) {
+        const optionsContainer = document.getElementById(`optionsQ${questionNum}`);
+        let optionsHTML = '';
+        
+        // Siempre usar opciones mezcladas
+        const questionData = shuffledQuestions[questionNum];
+        questionData.options.forEach(option => {
+            optionsHTML += `
+                <label>
+                    <input type="radio" name="q${questionNum}" value="${option.newLetter}"/>
+                    ${option.newLetter}. ${option.text}
+                </label>
+            `;
+        });
+        
+        optionsContainer.innerHTML = optionsHTML;
+    }
+
+    // Función para obtener la respuesta correcta (siempre en modo aleatorio)
+    function getCorrectAnswer(questionNum) {
+        return shuffledQuestions[questionNum].correct;
+    }
+
+    function startEvaluation() {
+        const nameInput = document.getElementById('studentName');
+        studentName = nameInput.value.trim();
+        
+        if (studentName === '') {
+            alert('Por favor, ingresa tu nombre para continuar.');
+            return;
+        }
+        
+        // Siempre preparar preguntas en modo aleatorio
+        prepareRandomQuestions();
+        
+        // Renderizar todas las preguntas con las opciones mezcladas
+        for (let i = 1; i <= 10; i++) {
+            renderQuestionOptions(i);
+        }
+        
+        document.getElementById('sidebarStudentName').textContent = studentName;
+        showPage(1);
+    }
+
+    function showPage(pageNum) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.getElementById(`page${pageNum}`).classList.add('active');
+        
+        currentPage = pageNum;
+        updateNavigation();
+        updateProgress();
+    }
+
+    function nextPage() {
+        if (currentPage < 11) {
+            showPage(currentPage + 1);
+        }
+    }
+
+    function previousPage() {
+        if (currentPage > 0) {
+            showPage(currentPage - 1);
+        }
+    }
+
+    function updateNavigation() {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        prevBtn.disabled = currentPage === 0;
+        nextBtn.disabled = currentPage === 11;
+        
+        if (currentPage === 11) {
+            nextBtn.style.display = 'none';
+        } else {
+            nextBtn.style.display = 'inline-block';
+        }
+        
+        document.getElementById('currentPageName').textContent = pageNames[currentPage];
+        document.getElementById('currentPageNum').textContent = currentPage;
+    }
+
+    function updateProgress() {
+        const percentage = (questionsAnswered / 10) * 100;
+        document.getElementById('progressFill').style.width = percentage + '%';
+        document.getElementById('progressText').textContent = Math.round(percentage) + '%';
+        document.getElementById('currentScore').textContent = totalScore;
+    }
+
+    function checkQuestion(questionNum) {
+        const selectedRadio = document.querySelector(`input[name="q${questionNum}"]:checked`);
+        
+        if (!selectedRadio) {
+            alert('Por favor, selecciona una respuesta antes de verificar.');
+            return;
+        }
+        
+        const correctAnswer = getCorrectAnswer(questionNum);
+        const isCorrect = selectedRadio.value === correctAnswer;
+        const feedbackEl = document.getElementById(`feedbackQ${questionNum}`);
+        const submitBtn = document.getElementById(`submitQ${questionNum}`);
+        
+        // Marcar respuesta correcta e incorrecta
+        document.querySelectorAll(`input[name="q${questionNum}"]`).forEach(radio => {
+            radio.disabled = true;
+            if (radio.value === correctAnswer) {
+                radio.parentElement.style.background = '#d4edda';
+                radio.parentElement.style.borderColor = '#28a745';
+            } else if (radio.checked && radio.value !== correctAnswer) {
+                radio.parentElement.style.background = '#f8d7da';
+                radio.parentElement.style.borderColor = '#dc3545';
+            }
+        });
+        
+        // Actualizar puntuación
+        if (isCorrect) {
+            questionScores[`q${questionNum}`] = 10;
+            totalScore += 10;
+            feedbackEl.className = 'feedback correct';
+        } else {
+            questionScores[`q${questionNum}`] = 0;
+            feedbackEl.className = 'feedback incorrect';
+        }
+        
+        questionsAnswered++;
+        feedbackEl.style.display = 'block';
+        
+        // Explicaciones específicas
+        const explanations = {
+            1: isCorrect ? '¡Correcto! Ordenando: Ruby (14,6), Leo (14,58), Julia (14,56), Urna (14,2). Leo obtuvo la plata.' : 'Incorrecto. Ordena los resultados de mayor a menor: 14,6 > 14,58 > 14,56 > 14,2.',
+            2: isCorrect ? '¡Correcto! Pedro: 5/10 = 50% en escritura. Ana: 8/10 = 80% en escritura.' : 'Incorrecto. Calcula el porcentaje: (respuestas correctas / total de preguntas) × 100.',
+            3: isCorrect ? '¡Correcto! Densidad Z < 1, entonces masa Z < 100g. La elección es correcta.' : 'Incorrecto. Si densidad = masa/volumen y volumen = 100ml, entonces si densidad < 1, masa < 100g.',
+            4: isCorrect ? '¡Correcto! Paso 1: (8+12)/2=10. Paso 2: (10+4)/2=7. Paso 3: (7+11)/2=9. Bonificación: 7×10.000=$70.000.' : 'Incorrecto. Sigue los pasos: promedia progresivamente y multiplica por 10.000.',
+            5: isCorrect ? '¡Correcto! Como -7 < -6, entonces 10⁻⁷ < 10⁻⁶. El organismo X es menor.' : 'Incorrecto. En exponentes negativos, mientras más negativo el exponente, menor es el valor.',
+            6: isCorrect ? '¡Correcto! En un triángulo isósceles rectángulo, los ángulos de la base miden 45° cada uno.' : 'Incorrecto. El triángulo PQR es isósceles rectángulo, por lo que los ángulos PQR y PRQ ya miden 45°.',
+            7: isCorrect ? '¡Correcto! Los cuartiles Q₁=162, Q₂=165, Q₃=170 corresponden a una distribución simétrica.' : 'Incorrecto. Analiza la posición de los cuartiles: Q₁=162, Q₂=165, Q₃=170.',
+            8: isCorrect ? '¡Correcto! Pablo(-2,3) y René(2,-3) forman conexión diagonal, Laura(1,1) y Sara(-1,-1) también diagonal.' : 'Incorrecto. Analiza las coordenadas: Pablo(-2,3), Laura(1,1), René(2,-3), Sara(-1,-1).',
+            9: isCorrect ? '¡Correcto! La fórmula cuadrática mostrada está incorrecta. La correcta es x = ±√169.' : 'Incorrecto. Para f(x) = x² - 169, los cortes con x se hallan resolviendo x² - 169 = 0.',
+            10: isCorrect ? '¡Correcto! El error está en multiplicar por toda la altura del recipiente en lugar de solo la del aceite.' : 'Incorrecto. El paso 2 calcula el volumen total del recipiente, no solo el del aceite.'
+        };
+        
+        feedbackEl.textContent = `${explanations[questionNum]} (${questionScores[`q${questionNum}`]}/10 puntos)`;
+        
+        submitBtn.disabled = true;
+        updateQuestionStatus(questionNum, isCorrect);
+        updateProgress();
+        
+        if (questionsAnswered === 10) {
+            document.getElementById('resultsBtn').style.display = 'inline-block';
+        }
+    }
+
+    function updateQuestionStatus(questionNum, isCorrect) {
+        const statusEl = document.getElementById(`q${questionNum}status`);
+        const questionName = statusEl.textContent.split(' ').slice(1).join(' ').replace(/[✅❌⏳]/g, '');
+        statusEl.innerHTML = `${questionNum}. ${questionName} ${isCorrect ? '✅' : '❌'}`;
+    }
+
+    function showResults() {
+        // Actualizar información final
+        document.getElementById('finalStudentName').textContent = studentName;
+        document.getElementById('finalScore').textContent = `${totalScore}/100`;
+        document.getElementById('evaluationDate').textContent = new Date().toLocaleDateString();
+        
+        // Calcular puntuaciones por área
+        const reasoningScore = questionScores.q2 + questionScores.q3 + questionScores.q4 + questionScores.q5;
+        const geometryScore = questionScores.q6 + questionScores.q8 + questionScores.q10;
+        const statisticsScore = questionScores.q1 + questionScores.q7 + questionScores.q9;
+        
+        document.getElementById('reasoningScore').textContent = `${reasoningScore}/40`;
+        document.getElementById('geometryScore').textContent = `${geometryScore}/30`;
+        document.getElementById('statisticsScore').textContent = `${statisticsScore}/30`;
+        
+        // Generar mensaje de rendimiento
+        const percentage = (totalScore / 100) * 100;
+        const messageEl = document.getElementById('performanceMessage');
+        const recommendationsEl = document.getElementById('recommendations');
+        
+        if (percentage >= 80) {
+            messageEl.className = 'performance-message excellent';
+            messageEl.textContent = '🏆 ¡EXCELENTE! Tienes un dominio sobresaliente de las competencias matemáticas.';
+            recommendationsEl.innerHTML = `
+                <p>• Continúa practicando con simulacros completos del ICFES</p>
+                <p>• Enfócate en optimizar tu velocidad de resolución</p>
+                <p>• Revisa estrategias avanzadas de eliminación de respuestas</p>
+            `;
+        } else if (percentage >= 60) {
+            messageEl.className = 'performance-message good';
+            messageEl.textContent = '👍 ¡BUEN TRABAJO! Tienes una base sólida. Fortalece las áreas de menor puntaje.';
+            recommendationsEl.innerHTML = `
+                <p>• Refuerza las competencias con menor puntuación</p>
+                <p>• Practica más ejercicios de razonamiento cuantitativo</p>
+                <p>• Resuelve problemas contextualizados similares al ICFES</p>
+            `;
+        } else {
+            messageEl.className = 'performance-message needs-improvement';
+            messageEl.textContent = '📚 REQUIERE MEJORA. Te recomendamos reforzar los conceptos fundamentales.';
+            recommendationsEl.innerHTML = `
+                <p>• Repasa los conceptos básicos de cada competencia</p>
+                <p>• Solicita apoyo académico en las áreas más débiles</p>
+                <p>• Dedica más tiempo al estudio de matemáticas</p>
+            `;
+        }
+        
+        generateAchievements();
+        showPage(11);
+    }
+
+    function generateAchievements() {
+        const achievements = [];
+        const percentage = (totalScore / 100) * 100;
+        
+        if (percentage >= 90) {
+            achievements.push({
+                icon: '🏆',
+                title: 'Excelencia Matemática',
+                description: 'Dominio sobresaliente del simulacro',
+                class: 'gold'
+            });
+        } else if (percentage >= 80) {
+            achievements.push({
+                icon: '⭐',
+                title: 'Preparado para ICFES',
+                description: 'Excelente nivel matemático',
+                class: 'gold'
+            });
+        } else if (percentage >= 70) {
+            achievements.push({
+                icon: '👍',
+                title: 'Buen Nivel Matemático',
+                description: 'Sólida comprensión',
+                class: 'silver'
+            });
+        }
+        
+        // Logros específicos por competencias
+        const reasoningScore = questionScores.q2 + questionScores.q3 + questionScores.q4 + questionScores.q5;
+        if (reasoningScore >= 30) {
+            achievements.push({
+                icon: '🧮',
+                title: 'Maestro del Razonamiento',
+                description: 'Domina el pensamiento cuantitativo',
+                class: 'gold'
+            });
+        }
+        
+        const geometryScore = questionScores.q6 + questionScores.q8 + questionScores.q10;
+        if (geometryScore >= 20) {
+            achievements.push({
+                icon: '📐',
+                title: 'Experto en Geometría',
+                description: 'Excelente manejo espacial',
+                class: 'silver'
+            });
+        }
+        
+        const statisticsScore = questionScores.q1 + questionScores.q7 + questionScores.q9;
+        if (statisticsScore >= 20) {
+            achievements.push({
+                icon: '📊',
+                title: 'Analista Estadístico',
+                description: 'Domina datos y probabilidades',
+                class: 'bronze'
+            });
+        }
+        
+        if (questionsAnswered === 10) {
+            achievements.push({
+                icon: '🎯',
+                title: 'Perseverancia',
+                description: 'Completó todas las preguntas',
+                class: 'bronze'
+            });
+        }
+        
+        // Logro especial permanente para modo aleatorio
+        achievements.push({
+            icon: '🎲',
+            title: 'Maestro Aleatorio',
+            description: 'Domina el simulacro con opciones mezcladas',
+            class: 'gold'
+        });
+        
+        // Renderizar logros
+        const container = document.getElementById('achievementsContainer');
+        container.innerHTML = achievements.map(achievement => `
+            <div class="achievement ${achievement.class}">
+                <div style="font-size: 2em; margin-bottom: 10px;">${achievement.icon}</div>
+                <h4>${achievement.title}</h4>
+                <p>${achievement.description}</p>
+            </div>
+        `).join('');
+    }
+
+    function downloadCertificate() {
+        // Crear una nueva ventana para el certificado
+        const printWindow = window.open('', '_blank');
+        
+        // Obtener los datos actuales
+        const studentNameText = document.getElementById('finalStudentName').textContent;
+        const finalScoreText = document.getElementById('finalScore').textContent;
+        const evaluationDateText = document.getElementById('evaluationDate').textContent;
+        const performanceMessageText = document.getElementById('performanceMessage').textContent;
+        const reasoningScoreText = document.getElementById('reasoningScore').textContent;
+        const geometryScoreText = document.getElementById('geometryScore').textContent;
+        const statisticsScoreText = document.getElementById('statisticsScore').textContent;
+        const recommendationsHTML = document.getElementById('recommendations').innerHTML;
+        const achievementsHTML = document.getElementById('achievementsContainer').innerHTML;
+        
+        // HTML del certificado con estilos completos
+        const certificateHTML = `
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Certificado - Simulacro Matemáticas S2</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                
+                body {
+                    font-family: 'Arial', sans-serif;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    min-height: 100vh;
+                    padding: 20px;
+                    color: white;
+                }
+                
+                .certificate-container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    text-align: center;
+                }
+                
+                .certificate-header {
+                    margin-bottom: 30px;
+                }
+                
+                .certificate-title {
+                    font-size: 2.5em;
+                    margin-bottom: 20px;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                }
+                
+                .student-name-display {
+                    background: linear-gradient(45deg, #2196f3, #21cbf3);
+                    color: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    text-align: center;
+                    margin-bottom: 20px;
+                    font-weight: bold;
+                    font-size: 1.2em;
+                }
+                
+                .random-indicator {
+                    background: linear-gradient(45deg, #ff6b6b, #ffa500);
+                    color: white;
+                    padding: 10px 15px;
+                    border-radius: 25px;
+                    font-size: 0.9em;
+                    font-weight: bold;
+                    margin: 10px auto;
+                    text-align: center;
+                    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+                    max-width: 400px;
+                }
+                
+                .evaluation-info {
+                    text-align: center;
+                    margin: 20px 0;
+                    padding: 15px;
+                    background: rgba(255, 255, 255, 0.1);
+                    border-radius: 15px;
+                    border: 2px solid #fff;
+                }
+                
+                .evaluation-info h3 {
+                    color: white;
+                    margin: 0;
+                    font-size: 1.1em;
+                }
+                
+                .final-score {
+                    font-size: 4em;
+                    font-weight: bold;
+                    color: #4caf50;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                    margin: 30px 0;
+                }
+                
+                .performance-message {
+                    font-size: 1.3em;
+                    font-weight: bold;
+                    padding: 20px;
+                    border-radius: 15px;
+                    margin: 20px 0;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+                }
+                
+                .performance-message.excellent {
+                    background: linear-gradient(45deg, #4caf50, #81c784);
+                }
+                
+                .performance-message.good {
+                    background: linear-gradient(45deg, #2196f3, #64b5f6);
+                }
+                
+                .performance-message.needs-improvement {
+                    background: linear-gradient(45deg, #ff9800, #ffb74d);
+                }
+                
+                .section-title {
+                    color: white;
+                    font-size: 1.5em;
+                    margin: 30px 0 20px 0;
+                    text-align: center;
+                }
+                
+                .achievements-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 20px;
+                    margin: 30px 0;
+                }
+                
+                .achievement {
+                    background: white;
+                    color: #2c3e50;
+                    padding: 20px;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    text-align: center;
+                }
+                
+                .achievement.gold {
+                    border-top: 5px solid #ffd700;
+                }
+                
+                .achievement.silver {
+                    border-top: 5px solid #c0c0c0;
+                }
+                
+                .achievement.bronze {
+                    border-top: 5px solid #cd7f32;
+                }
+                
+                .achievement h4 {
+                    margin: 10px 0;
+                    font-size: 1.1em;
+                }
+                
+                .competency-scores {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 20px;
+                    margin: 30px 0;
+                }
+                
+                .competency-card {
+                    background: white;
+                    padding: 20px;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    text-align: center;
+                }
+                
+                .competency-card h4 {
+                    color: #2c3e50;
+                    margin-bottom: 10px;
+                }
+                
+                .competency-score {
+                    font-size: 2em;
+                    font-weight: bold;
+                    margin: 10px 0;
+                }
+                
+                .score-reasoning { color: #2196f3; }
+                .score-geometry { color: #4caf50; }
+                .score-statistics { color: #ff9800; }
+                
+                .recommendations {
+                    margin: 40px 0;
+                    padding: 20px;
+                    background: rgba(255, 255, 255, 0.1);
+                    border-radius: 15px;
+                    border: 2px solid #fff;
+                    text-align: left;
+                }
+                
+                .recommendations h4 {
+                    color: white;
+                    margin: 0 0 10px 0;
+                    text-align: center;
+                }
+                
+                .recommendations p {
+                    line-height: 1.8;
+                    color: white;
+                    margin: 5px 0;
+                }
+                
+                .certificate-footer {
+                    margin-top: 40px;
+                    padding: 20px;
+                    border-top: 2px solid rgba(255,255,255,0.3);
+                    font-size: 0.9em;
+                    color: rgba(255,255,255,0.8);
+                }
+                
+                @media print {
+                    body {
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        -webkit-print-color-adjust: exact;
+                        color-adjust: exact;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="certificate-container">
+                <div class="certificate-header">
+                    <h1 class="certificate-title">🎓 ¡Simulacro S2 Completado!</h1>
+                    <div class="student-name-display">${studentNameText}</div>
+                    <div class="random-indicator">🎲 COMPLETADO EN MODO ALEATORIO</div>
+                    
+                    <div class="evaluation-info">
+                        <h3>📅 Fecha de Evaluación: ${evaluationDateText}</h3>
+                        <h3>🏫 Evaluación: Simulacro Matemáticas S2 - ICFES</h3>
+                    </div>
+                </div>
+                
+                <div class="final-score">${finalScoreText}</div>
+                <div class="performance-message ${getPerformanceClass()}">${performanceMessageText}</div>
+                
+                <h3 class="section-title">🏆 Reconocimientos y Logros Obtenidos</h3>
+                <div class="achievements-grid">${achievementsHTML}</div>
+                
+                <h3 class="section-title">📊 Desglose Detallado por Competencia</h3>
+                <div class="competency-scores">
+                    <div class="competency-card">
+                        <h4>Razonamiento Cuantitativo</h4>
+                        <div class="competency-score score-reasoning">${reasoningScoreText}</div>
+                    </div>
+                    <div class="competency-card">
+                        <h4>Competencia Geométrica</h4>
+                        <div class="competency-score score-geometry">${geometryScoreText}</div>
+                    </div>
+                    <div class="competency-card">
+                        <h4>Estadística y Probabilidad</h4>
+                        <div class="competency-score score-statistics">${statisticsScoreText}</div>
+                    </div>
+                </div>
+                
+                <div class="recommendations">
+                    <h4>💡 Recomendaciones para el ICFES:</h4>
+                    ${recommendationsHTML}
+                </div>
+                
+                <div class="certificate-footer">
+                    <p>Certificado generado automáticamente por el Sistema de Simulacros ICFES</p>
+                    <p>Institución Educativa - Preparación Académica Integral</p>
+                    <p><strong>Simulacro realizado en modo aleatorio permanente para máxima variabilidad de práctica</strong></p>
+                </div>
+            </div>
+        </body>
+        </html>`;
+        
+        // Escribir el contenido en la nueva ventana
+        printWindow.document.write(certificateHTML);
+        printWindow.document.close();
+        
+        // Esperar a que se cargue completamente y luego imprimir
+        printWindow.onload = function() {
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
+        };
+    }
+    
+    function getPerformanceClass() {
+        const percentage = (totalScore / 100) * 100;
+        if (percentage >= 80) return 'excellent';
+        if (percentage >= 60) return 'good';
+        return 'needs-improvement';
+    }
+
+    function restartEvaluation() {
+        studentName = '';
+        currentPage = 0;
+        totalScore = 0;
+        questionsAnswered = 0;
+        shuffledQuestions = {};
+        questionScores = {
+            q1: 0, q2: 0, q3: 0, q4: 0, q5: 0,
+            q6: 0, q7: 0, q8: 0, q9: 0, q10: 0
+        };
+        
+        document.getElementById('studentName').value = '';
+        document.getElementById('sidebarStudentName').textContent = 'Sin nombre';
+        
+        // Limpiar todas las respuestas y estados
+        for (let i = 1; i <= 10; i++) {
+            const optionsContainer = document.getElementById(`optionsQ${i}`);
+            optionsContainer.innerHTML = '';
+            
+            document.getElementById(`feedbackQ${i}`).style.display = 'none';
+            document.getElementById(`submitQ${i}`).disabled = false;
+            
+            const statusEl = document.getElementById(`q${i}status`);
+            const questionName = statusEl.textContent.split(' ').slice(1).join(' ').replace(/[✅❌]/g, '');
+            statusEl.innerHTML = `${i}. ${questionName} ⏳`;
+        }
+        
+        document.getElementById('resultsBtn').style.display = 'none';
+        showPage(0);
+    }
+
+    // Inicializar la aplicación
+    document.addEventListener('DOMContentLoaded', function() {
+        updateProgress();
+        updateNavigation();
+    });
+</script>
+</body>
+</html>
